@@ -1,33 +1,66 @@
-import React from 'react'
-import { Statistic, Row, Col } from 'antd'
-import { set } from 'lodash-es'
-import dayjs from 'dayjs'
-import './App.less';
+import React, { useState } from "react";
 
-const { Countdown } = Statistic;
+import "./App.less";
+import "./styles/index.less";
+import FlowContainer from "./containers/FlowContainer";
+import { ImageMapEditor } from "./editors";
+import { Title } from "./components/layout";
+import { i18nClient } from "./i18n";
+type EditorType = "imagemap" | "workflow" | "flow" | "hexgrid" | "fiber";
+import { ConfigProvider } from "antd";
+import enUS from "antd/es/locale/en_US";
+
+import i18next from "i18next";
+
+const antResources: any = {
+  en: enUS,
+  "en-US": enUS,
+};
 
 const App = () => {
-  const deadline = dayjs().unix() * 1000 + 1000 * 60 * 60 * 24 * 2 + 1000 * 30;
-  const onFinish = () => {
-    const a = {}
-    set(a, 'finish', true)
-  }
+  const [activeEditor, setActiveEditor] = useState("imagemap");
+  const handleChangeEditor = (key: string) => {
+    setActiveEditor(key);
+  };
+
+  const renderEditor = (activeEditor: EditorType) => {
+    switch (activeEditor) {
+      case "imagemap":
+        return <ImageMapEditor />;
+
+      default:
+        return <ImageMapEditor />;
+    }
+  };
 
   return (
-    <div className="container">
-      <Row gutter={16} className="time">
-        <Col span={12}>
-          <Countdown title="Countdown" value={deadline} onFinish={onFinish} />
-        </Col>
-        <Col span={12}>
-          <Countdown title="Million Seconds" value={deadline} format="HH:mm:ss:SSS"/>
-        </Col>
-        <Col span={24} style={{ marginTop: 32 }}>
-          <Countdown title="Day Level" value={deadline} format="D 天 H 时 m 分 s 秒" />
-        </Col>
-      </Row>
-    </div>
-  )
-}
+    <ConfigProvider
+      locale={antResources[i18next.language]}
+      theme={{ token: { colorPrimary: "#08979c" } }}
+    >
+      <div className="rde-main">
+        <div className="rde-title">
+          <Title
+            currentEditor={activeEditor}
+            onChangeEditor={handleChangeEditor}
+          ></Title>
+        </div>
+        <FlowContainer>
+          <div className="rde-content">
+            {renderEditor(
+              activeEditor as
+                | "imagemap"
+                | "workflow"
+                | "flow"
+                | "hexgrid"
+                | "fiber",
+            )}
+          </div>
+        </FlowContainer>
+      </div>
+    </ConfigProvider>
+  );
+};
 
-export default App
+i18nClient();
+export default App;

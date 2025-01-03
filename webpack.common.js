@@ -2,6 +2,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const WebpackBar = require("webpackbar");
 const Dotenv = require("dotenv-webpack");
+const webpack = require("webpack");
 const {
   defineReactCompilerLoaderOption,
   reactCompilerLoader,
@@ -39,24 +40,21 @@ module.exports = () => {
       }),
       new WebpackBar(),
       new Dotenv(),
+      new webpack.ProvidePlugin({
+        React: "react",
+      }),
     ],
     resolve: {
       extensions: [".tsx", ".jsx", ".ts", ".js", ".json", ".wasm"],
+      alias: {
+        "@": path.resolve(__dirname, "src"),
+      },
     },
     module: {
       rules: [
         {
           test: /\.(jsx|js|ts|tsx)?$/,
-          use: [
-            "thread-loader",
-            "swc-loader",
-            {
-              loader: reactCompilerLoader,
-              options: defineReactCompilerLoaderOption({
-                // React Compiler options goes here
-              }),
-            },
-          ],
+          use: ["thread-loader", "swc-loader"],
           include: path.resolve(__dirname, "src"),
         },
         {
