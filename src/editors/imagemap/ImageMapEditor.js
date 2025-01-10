@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Content } from "@/components/layout";
 import title from "../../components/layout/Title";
 import i18n from "i18next";
@@ -10,6 +10,8 @@ import { Button, Tooltip } from "antd";
 import i18next from "i18next";
 import { QuestionOutlined } from "@ant-design/icons";
 import ImageMapHeaderToolbar from "@/editors/imagemap/ImageMapHeaderToolbar";
+
+import Canvas from "@/canvas/Canvas";
 const propertiesToInclude = [
   "id",
   "name",
@@ -81,6 +83,23 @@ const ImageMapEditor = () => {
   const [editing, setEditing] = useState(false);
   const [descriptors, setDescriptors] = useState({});
   const [objects, setObjects] = useState(undefined);
+
+  let canvasRef = useRef(null);
+
+  const canvasHandler = {
+    onAdd: (target) => {
+      if (!editing) {
+        changeEditing(true);
+      }
+      if (target.type === "activeSelection") {
+        canvasHandler.onSelect(null);
+        return;
+      }
+    },
+  };
+  const changeEditing = (editing) => {
+    setEditing(editing);
+  };
   useEffect(() => {
     showLoading(true);
     import("./Descriptors.json").then((descriptors) => {
@@ -101,12 +120,28 @@ const ImageMapEditor = () => {
   const title = <ImageMapTitle title={titleContent} />;
   const content = (
     <div className="rde-editor">
-      <ImageMapItems descriptors={descriptors} />
+      <ImageMapItems descriptors={descriptors} canvasRef={canvasRef.current} />
       <div className="rde-editor-canvas-container">
         <div className="rde-editor-header-toolbar">
           <ImageMapHeaderToolbar />
         </div>
-        <div className="rde-editor-canvas"></div>
+        <div className="rde-editor-canvas">
+          <Canvas
+            ref={canvasRef}
+            className="rde-canvas"
+            minZoom={1}
+            maxZoom={500}
+            keyEvent={{
+              transaction: true,
+            }}
+            canvasOption={{
+              selectionColor: "rgba(8, 151, 156, 0.3)",
+            }}
+            onAdd={canvasHandler.onAdd}
+            objectOption={defaultOption}
+            propertiesToInclude={propertiesToInclude}
+          />
+        </div>
       </div>
     </div>
   );

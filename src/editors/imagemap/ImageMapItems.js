@@ -1,10 +1,13 @@
 import { Flex } from "@/components/flex";
 import { Component } from "react";
-import { Collapse, Input } from "antd";
+import { Collapse, Input, message } from "antd";
 import i18n from "i18next";
 import classnames from "classnames";
 import { Scrollbar, CommonButton } from "@/components/common";
 import Icon from "@/components/icon/Icon";
+import debounce from "lodash/debounce";
+import { uuid } from "uuidv4";
+import { nanoid } from "nanoid";
 
 class ImageMapItems extends Component {
   state = {
@@ -44,6 +47,37 @@ class ImageMapItems extends Component {
     },
     onChangeActiveKey: (activeKey) => {
       this.setState({ activeKey });
+    },
+    onAddItem: (item, centered) => {
+      const { canvasRef } = this.props;
+      console.log(canvasRef, "canvasRef", this.props);
+      if (canvasRef?.handler?.interactionMode === "polygon") {
+        message.info("Already drawing").then((r) => console.log(r));
+        return;
+      }
+      // const id = nanoid();
+      // const option = Object.assign({}, item.option, { id });
+      // console.log(option, centered, "option, centered");
+      canvasRef?.handler?.add(item.option, centered);
+    },
+  };
+
+  events = {
+    onDragStart: function (e, item) {
+      this.item = item;
+      const { target } = e;
+      target.classList.add("dragging");
+    },
+    onDragEnd: function (e, item) {
+      const { target } = e;
+      target.classList.add("over");
+    },
+    onDragOver: function (e) {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+      e.dataTransfer.dropEffect = "copy";
+      return false;
     },
   };
 
