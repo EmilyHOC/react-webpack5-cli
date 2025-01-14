@@ -27,7 +27,6 @@ class ElementHandler {
     }
     obj.setCoords();
     const zoom = this.handler.canvas.getZoom();
-    console.log(zoom, "zoom");
     const { scaleX, scaleY, width, height } = obj;
     const { left, top } = obj.getBoundingRect(false);
     const padLeft = (width * scaleX * zoom - width) / 2;

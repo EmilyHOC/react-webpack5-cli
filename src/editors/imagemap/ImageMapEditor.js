@@ -95,6 +95,7 @@ const ImageMapEditor = () => {
         canvasHandler.onSelect(null);
         return;
       }
+      canvasRef.current.handler.select(target);
     },
   };
   const changeEditing = (editing) => {

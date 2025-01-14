@@ -50,15 +50,14 @@ class ImageMapItems extends Component {
     },
     onAddItem: (item, centered) => {
       const { canvasRef } = this.props;
-      console.log(canvasRef, "canvasRef", this.props);
       if (canvasRef?.handler?.interactionMode === "polygon") {
         message.info("Already drawing").then((r) => console.log(r));
         return;
       }
-      // const id = nanoid();
-      // const option = Object.assign({}, item.option, { id });
-      // console.log(option, centered, "option, centered");
-      canvasRef?.handler?.add(item.option, centered);
+      const id = nanoid();
+      const option = Object.assign({}, item.option, { id });
+      canvasRef?.handler?.add(option, centered);
+      console.log(canvasRef, "canvasRef");
     },
   };
 
@@ -80,7 +79,6 @@ class ImageMapItems extends Component {
       return false;
     },
   };
-
   renderItems = (items) => (
     <Flex flexWrap="wrap" flexDirection="column" style={{ width: "100%" }}>
       {items.map((item) => this.renderItem(item))}

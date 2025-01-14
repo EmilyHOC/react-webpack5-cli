@@ -3,14 +3,14 @@
 		{
 			"name": "Marker",
 			"description": "",
-			"type": "marker",
+			"eleType": "marker",
 			"icon": {
 				"prefix": "fas",
 				"name": "map-marker-alt"
 			},
 			"option": {
 				"type": "i-text",
-				"text": "\uf3c5",
+				"eleType": "\uf3c5",
 				"fontFamily": "Font Awesome 5 Free",
 				"fontWeight": 900,
 				"fontSize": 60,
@@ -25,13 +25,13 @@
 		{
 			"name": "Text",
 			"description": "",
-			"type": "text",
+			"eleType": "text",
 			"icon": {
 				"prefix": "fas",
 				"name": "font"
 			},
 			"option": {
-				"type": "textbox",
+				"eleType": "textbox",
 				"text": "",
 				"width": 60,
 				"height": 30,
@@ -44,13 +44,13 @@
 		{
 			"name": "Image",
 			"description": "",
-			"type": "image",
+			"eleType": "image",
 			"icon": {
 				"prefix": "fas",
 				"name": "image"
 			},
 			"option": {
-				"type": "image",
+				"eleType": "image",
 				"name": "New image",
 				"src": "./images/sample/transparentBg.png"
 			}
@@ -58,13 +58,13 @@
 		{
 			"name": "GIF",
 			"description": "",
-			"type": "gif",
+			"eleType": "gif",
 			"icon": {
 				"prefix": "fas",
 				"name": "image"
 			},
 			"option": {
-				"type": "gif",
+				"eleType": "gif",
 				"width": 400,
 				"height": 400,
 				"name": "New gif",
@@ -76,7 +76,7 @@
 		{
 			"name": "Triangle",
 			"description": "",
-			"type": "shape",
+			"eleType": "shape",
 			"icon": {
 				"prefix": "fas",
 				"name": "play",
@@ -85,7 +85,7 @@
 				}
 			},
 			"option": {
-				"type": "triangle",
+				"eleType": "triangle",
 				"width": 30,
 				"height": 30,
 				"name": "New shape"
@@ -94,13 +94,13 @@
 		{
 			"name": "Rectangle",
 			"description": "",
-			"type": "shape",
+			"eleType": "shape",
 			"icon": {
 				"prefix": "fas",
 				"name": "stop"
 			},
 			"option": {
-				"type": "rect",
+				"eleType": "rect",
 				"width": 40,
 				"height": 40,
 				"name": "New shape"
@@ -109,13 +109,13 @@
 		{
 			"name": "Circle",
 			"description": "",
-			"type": "shape",
+			"eleType": "shape",
 			"icon": {
 				"prefix": "fas",
 				"name": "circle"
 			},
 			"option": {
-				"type": "circle",
+				"eleType": "circle",
 				"radius": 30,
 				"name": "New shape"
 			}
@@ -123,13 +123,13 @@
 		{
 			"name": "Cube",
 			"description": "",
-			"type": "shape",
+			"eleType": "shape",
 			"icon": {
 				"prefix": "fas",
 				"name": "cube"
 			},
 			"option": {
-				"type": "cube",
+				"eleType": "cube",
 				"width": 80,
 				"height": 80,
 				"name": "New shape"
@@ -140,26 +140,26 @@
 		{
 			"name": "Polygon",
 			"description": "",
-			"type": "drawing",
+			"eleType": "drawing",
 			"icon": {
 				"prefix": "fas",
 				"name": "draw-polygon"
 			},
 			"option": {
-				"type": "polygon",
+				"eleType": "polygon",
 				"name": "New polygon"
 			}
 		},
 		{
 			"name": "Polyline",
 			"description": "",
-			"type": "drawing",
+			"eleType": "drawing",
 			"icon": {
 				"prefix": "fas",
 				"name": "minus-square"
 			},
 			"option": {
-				"type": "polyline",
+				"eleType": "polyline",
 				"name": "New polyline"
 			}
 		},
@@ -172,7 +172,7 @@
 				"name": "minus"
 			},
 			"option": {
-				"type": "line",
+				"eleType": "line",
 				"name": "New line"
 			}
 		},
@@ -185,7 +185,7 @@
 				"name": "long-arrow-alt-right"
 			},
 			"option": {
-				"type": "arrow",
+				"eleType": "arrow",
 				"name": "New arrow"
 			}
 		}
@@ -194,14 +194,14 @@
 		{
 			"name": "Chart",
 			"description": "",
-			"type": "element",
+			"eleType": "element",
 			"icon": {
 				"prefix": "fas",
 				"name": "chart-line"
 			},
 			"option": {
 				"superType": "element",
-				"type": "chart",
+				"eleType": "chart",
 				"name": "New chart",
 				"width": 356,
 				"height": 356
@@ -210,14 +210,14 @@
 		{
 			"name": "pieChart",
 			"description": "",
-			"type": "element",
+			"eleType": "element",
 			"icon": {
 				"prefix": "fas",
 				"name": "chart-pie"
 			},
 			"option": {
 				"superType": "element",
-				"type": "pieChart",
+				"eleType": "pieChart",
 				"name": "New chart2",
 				"width": 300,
 				"height": 300
@@ -226,14 +226,14 @@
 		{
 			"name": "Element",
 			"description": "",
-			"type": "element",
+			"eleType": "element",
 			"icon": {
 				"prefix": "fab",
 				"name": "html5"
 			},
 			"option": {
 				"superType": "element",
-				"type": "element",
+				"eleType": "element",
 				"width": 480,
 				"height": 270,
 				"name": "New element"
@@ -242,14 +242,14 @@
 		{
 			"name": "Iframe",
 			"description": "",
-			"type": "element",
+			"eleType": "element",
 			"icon": {
 				"prefix": "fas",
 				"name": "window-maximize"
 			},
 			"option": {
 				"superType": "element",
-				"type": "iframe",
+				"eleType": "iframe",
 				"width": 480,
 				"height": 270,
 				"name": "New iframe"
@@ -258,14 +258,14 @@
 		{
 			"name": "Video",
 			"description": "",
-			"type": "element",
+			"eleType": "element",
 			"icon": {
 				"prefix": "fab",
 				"name": "youtube"
 			},
 			"option": {
 				"superType": "element",
-				"type": "video",
+				"eleType": "video",
 				"width": 480,
 				"height": 270,
 				"name": "New video",
@@ -279,13 +279,13 @@
 		{
 			"name": "Default",
 			"description": "",
-			"type": "default",
+			"eleType": "default",
 			"icon": {
 				"prefix": "fas",
 				"name": "bezier-curve"
 			},
 			"option": {
-				"type": "svg",
+				"eleType": "svg",
 				"superType": "svg",
 				"name": "New SVG",
 				"loadType": "file",

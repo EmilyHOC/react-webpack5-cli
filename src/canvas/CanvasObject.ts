@@ -38,7 +38,7 @@ const CanvasObject: CanvasObjectSchema = {
   },
   textbox: {
     create: ({ text, ...option }: { text: string }) =>
-      new fabric.Textbox(text, option),
+      new fabric.Textbox(text ? text : "文本", option),
   },
   triangle: {
     create: (option: any) => new fabric.Triangle(option),

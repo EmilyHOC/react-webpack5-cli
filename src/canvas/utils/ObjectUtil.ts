@@ -264,3 +264,22 @@ export interface FabricEvent<T extends any = Event>
     width: number;
   };
 }
+export type FabricImage = FabricObject &
+  fabric.Image & {
+    /**
+     * Image URL
+     * @type {string}
+     */
+    src?: string;
+    /**
+     * Image File or Blob
+     * @type {File}
+     */
+    file?: File;
+    /**
+     * Image Filter
+     * @type {IFilter[]}
+     */
+    filters?: any;
+    _element?: any;
+  };

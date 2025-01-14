@@ -2,6 +2,7 @@ import {
   CanvasOption,
   FabricCanvas,
   FabricEvent,
+  FabricImage,
   FabricObject,
   FabricObjectOption,
   FabricObjects,
@@ -16,6 +17,7 @@ import * as fabric from "fabric";
 import { defaults } from "@/canvas/constants";
 import CanvasObject from "@/canvas/CanvasObject";
 import ElementHandler from "@/canvas/handlers/ElementHandler";
+import warning from "antd/es/_util/warning";
 export interface HandlerCallback {
   /**
    * 当 Canvas 中已添加对象时，调用函数
@@ -325,8 +327,7 @@ class Handler implements HandlerOptions {
       lockMovementY: !editable,
       hoverCursor: !editable ? "pointer" : "move",
     };
-    console.log(obj, "obj");
-    if (obj.type === "i-text") {
+    if (obj.eleType === "i-text") {
       option.editable = false;
     } else {
       option.editable = editable;
@@ -343,19 +344,22 @@ class Handler implements HandlerOptions {
     );
     let createdObj;
     // Create canvas object
-    if (obj.type === "image") {
-      //    createdObj = this.addImage(newOption);
-    } else if (obj.type === "group") {
+    if (obj.eleType === "image") {
+      createdObj = this.addImage(newOption);
+    } else if (obj.eleType === "group") {
       //   createdObj = this.addGroup(newOption);
     } else {
-      console.log(newOption, "newOption");
-      createdObj = this.fabricObjects[obj.type].create(newOption);
+      createdObj = this.fabricObjects[obj.eleType].create(newOption);
     }
     if (group) {
       return createdObj;
     }
+    console.log(createdObj, "createdObj", objectOption);
+
     //往FabricCanvas对象添加组织好的数据
     this.canvas.add(createdObj);
+    //把所有画布对象放到数组里面
+    this.objects = this.getObjects();
     if (
       obj.superType !== "drawing" &&
       obj.superType !== "link" &&
@@ -363,6 +367,10 @@ class Handler implements HandlerOptions {
       !loaded
     ) {
       this.centerObject(createdObj, centered);
+    }
+    //触发Canvas.tsx画布中的回调函数
+    if (onAdd && editable && !loaded) {
+      onAdd(createdObj);
     }
     return createdObj;
   };
@@ -382,6 +390,74 @@ class Handler implements HandlerOptions {
     }
   };
 
+  public addImage = (obj: FabricImage) => {
+    const { objectOption } = this;
+    const { filters = [], src, file, ...otherOption } = obj;
+    const image = new Image();
+
+    const createdObj = new fabric.FabricImage(image, {
+      ...objectOption,
+      ...otherOption,
+    }) as FabricImage;
+    // createdObj.set({
+    //   filters: this.imageHandler.createFilters(filters),
+    // });
+    console.log(createdObj, "createdObjImage");
+    this.setImage(createdObj, src || file);
+    return createdObj;
+  };
+  public setImage = (
+    obj: FabricImage,
+    source?: File | string,
+    keepSize?: boolean,
+    options?: fabric.ImageProps,
+  ) => {
+    console.log(obj, "obj");
+    obj
+      .setSrc("http://fabricjs.com/assets/honey_im_subtle.png", () => {
+        this.canvas.add(obj);
+        this.canvas.setActiveObject(obj);
+      })
+      .then(() => {
+        this.canvas.requestRenderAll();
+      });
+  };
+  public find = (obj: FabricObject) => this.findById(obj.id);
+  public findById = (id: string): FabricObject | null => {
+    let findObject;
+    const exist = this.objects.some((obj) => {
+      if (obj.id === id) {
+        findObject = obj;
+        return true;
+      }
+      return false;
+    });
+    if (!exist) {
+      warning(true, "Not found object by id.");
+      return null;
+    }
+    return findObject;
+  };
+
+  /**
+   * 选中元素
+   * @param {FabricObject} obj
+   * @param {boolean} [find]
+   */
+  public select = (obj: FabricObject, find?: boolean) => {
+    console.log(obj, "select==object", this.objects);
+    let findObject = obj;
+    if (find) {
+      findObject = this.find(obj);
+    }
+    if (findObject) {
+      console.log(findObject, "find");
+      this.canvas.discardActiveObject();
+      this.canvas.setActiveObject(findObject);
+      this.canvas.requestRenderAll();
+    }
+  };
+
   public getObjects = (): FabricObject[] => {
     const objects = this.canvas.getObjects().filter((obj: FabricObject) => {
       if (obj.id === "workarea") {
@@ -395,6 +471,7 @@ class Handler implements HandlerOptions {
       }
       return true;
     }) as FabricObject[];
+    console.log(objects, "objects", this.canvas.getObjects());
     if (objects.length) {
       objects.forEach((obj) => (this.objectMap[obj.id] = obj));
     } else {
@@ -427,5 +504,10 @@ class Handler implements HandlerOptions {
       this.canvas.preserveObjectStacking = canvasOption.preserveObjectStacking;
     }
   };
+  /**
+   * 销毁画布
+   *
+   */
+  public destroy = () => {};
 }
 export default Handler;

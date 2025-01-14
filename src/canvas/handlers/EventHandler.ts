@@ -15,96 +15,16 @@ class EventHandler {
      * Mouse down event on object
      * @param {FabricEvent} opt
      */
-    mousedown: (opt: FabricEvent) => {
-      const { target } = opt;
-      console.log(target, "target", opt);
-      if (target && target.link && target.link.enabled) {
-        const { onClick } = this.handler;
-        if (onClick) {
-          onClick(this.handler.canvas, target);
-        }
-      }
-    },
+    mousedown: (opt: FabricEvent) => {},
     /**
      * Mouse double click event on object
      * @param {FabricEvent} opt
      */
-    mousedblclick: (opt: FabricEvent) => {
-      const { target } = opt;
-      console.log("opt:mousedblclick", opt);
-      if (target) {
-        const { onDblClick } = this.handler;
-        console.log(onDblClick, "onDbCLick");
-        if (onDblClick) {
-          onDblClick(this.handler.canvas, target);
-        }
-      }
-    },
+    mouseDblClick: (opt: FabricEvent) => {},
   };
 
-  initialize() {
-    if (this.handler.editable) {
-      // @ts-ignore
-      this.handler.canvas.on({
-        // 'object:modified': this.modified,
-        // 'object:scaling': this.scaling,
-        // 'object:moving': this.moving,
-        // 'object:rotating': this.rotating,
-        // 'object:rotated': this.rotated,
-        // 'mouse:wheel': this.mousewheel,
-        "mouse:down": this.mousedown,
-      });
-    } else {
-      // @ts-ignore
-      this.handler.canvas.on({
-        "mouse:down": this.mousedown,
-        // 'mouse:move': this.mousemove,
-        // 'mouse:out': this.mouseout,
-        // 'mouse:up': this.mouseup,
-        // 'mouse:wheel': this.mousewheel,
-      });
-    }
-  }
-  public mousedown = (opt: FabricEvent) => {
-    const event = opt as FabricEvent<MouseEvent>;
-    const { editable } = this.handler;
-    console.log("mousedown", event);
-    const { target } = event;
-    if (this.handler.interactionMode === "polygon") {
-      console.log(target.id);
-      if (
-        target &&
-        this.handler.pointArray.length &&
-        target.id === this.handler.pointArray[0].id
-      ) {
-        this.handler.drawingHandler.polygon.generate(this.handler.pointArray);
-      } else {
-        this.handler.drawingHandler.polygon.addPoint(event);
-      }
-    } else if (this.handler.interactionMode === "line") {
-      if (this.handler.pointArray.length && this.handler.activeLine) {
-        this.handler.drawingHandler.line.generate(event);
-      } else {
-        this.handler.drawingHandler.line.addPoint(event);
-      }
-    } else if (this.handler.interactionMode === "arrow") {
-      if (this.handler.pointArray.length && this.handler.activeLine) {
-        this.handler.drawingHandler.arrow.generate(event);
-      } else {
-        this.handler.drawingHandler.arrow.addPoint(event);
-      }
-    } else if (this.handler.interactionMode === "polyline") {
-      console.log(this.handler, "this.handler", target.id);
-      if (
-        target &&
-        this.handler.pointArray.length &&
-        target.id === this.handler.pointArray[0].id
-      ) {
-      } else {
-        this.handler.drawingHandler.polyline.addPoint(event);
-      }
-    }
-  };
+  initialize() {}
+  public mousedown = (opt: FabricEvent) => {};
   /**
    * 在画布上调用 resize 事件
    *
