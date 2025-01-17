@@ -9,8 +9,8 @@
 				"name": "map-marker-alt"
 			},
 			"option": {
-				"type": "i-text",
-				"eleType": "\uf3c5",
+				"eleType": "i-text",
+				"text": "\uf3c5",
 				"fontFamily": "Font Awesome 5 Free",
 				"fontWeight": 900,
 				"fontSize": 60,
@@ -192,7 +192,7 @@
 	],
 	"ELEMENT": [
 		{
-			"name": "Chart",
+			"name": "lineChart",
 			"description": "",
 			"eleType": "element",
 			"icon": {
@@ -203,8 +203,8 @@
 				"superType": "element",
 				"eleType": "chart",
 				"name": "New chart",
-				"width": 356,
-				"height": 356
+				"width": 300,
+				"height": 300
 			}
 		},
 		{

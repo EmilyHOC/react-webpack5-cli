@@ -55,9 +55,9 @@ class ImageMapItems extends Component {
         return;
       }
       const id = nanoid();
+
       const option = Object.assign({}, item.option, { id });
       canvasRef?.handler?.add(option, centered);
-      console.log(canvasRef, "canvasRef");
     },
   };
 

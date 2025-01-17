@@ -1,19 +1,6 @@
 import * as fabric from "fabric";
 
-import {
-  Arrow,
-  Gif,
-  Chart,
-  Element,
-  Iframe,
-  Video,
-  Node,
-  Link,
-  CurvedLink,
-  OrthogonalLink,
-  Line,
-  Cube,
-} from "./objects";
+import { LineChart } from "./objects";
 import { FabricObject } from "./utils";
 
 export interface ObjectSchema {
@@ -54,7 +41,7 @@ const CanvasObject: CanvasObjectSchema = {
   },
   image: {
     create: ({ element = new Image(), ...option }) =>
-      new fabric.Image(element, {
+      new fabric.FabricImage(element, {
         ...option,
         crossOrigin: "anonymous",
       }),
@@ -83,19 +70,19 @@ const CanvasObject: CanvasObjectSchema = {
   },
   chart: {
     create: (option: any) =>
-      new Chart(
+      new LineChart(
         {
-          xAxis: {},
-          yAxis: {},
+          xAxis: {
+            type: "category",
+            data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          },
+          yAxis: {
+            type: "value",
+          },
           series: [
             {
+              data: [150, 230, 224, 218, 135, 147, 260],
               type: "line",
-              data: [
-                [0, 1],
-                [1, 2],
-                [2, 3],
-                [3, 4],
-              ],
             },
           ],
         },
@@ -103,45 +90,7 @@ const CanvasObject: CanvasObjectSchema = {
       ),
   },
   pieChart: {
-    create: (option: any) =>
-      new Chart(
-        {
-          title: {
-            text: "饼图",
-            subtext: "Fake Data",
-            left: "center",
-          },
-          tooltip: {
-            trigger: "item",
-          },
-          legend: {
-            orient: "vertical",
-            left: "left",
-          },
-          series: [
-            {
-              name: "Access From",
-              type: "pie",
-              radius: "50%",
-              data: [
-                { value: 1048, name: "Search Engine" },
-                { value: 735, name: "Direct" },
-                { value: 580, name: "Email" },
-                { value: 484, name: "Union Ads" },
-                { value: 300, name: "Video Ads" },
-              ],
-              emphasis: {
-                itemStyle: {
-                  shadowBlur: 10,
-                  shadowOffsetX: 0,
-                  shadowColor: "rgba(0, 0, 0, 0.5)",
-                },
-              },
-            },
-          ],
-        },
-        option,
-      ),
+    create: (option: any) => {},
   },
   element: {
     create: ({ code, ...option }: { code: Code }) => new Element(code, option),

@@ -23,7 +23,16 @@ class EventHandler {
     mouseDblClick: (opt: FabricEvent) => {},
   };
 
-  initialize() {}
+  public initialize() {
+    if (this.handler.editable) {
+      // @ts-ignore
+      // @ts-ignore
+      this.handler.canvas.on({
+        "object:moving": this.moving,
+        "mouse:up": this.mouseup,
+      });
+    }
+  }
   public mousedown = (opt: FabricEvent) => {};
   /**
    * 在画布上调用 resize 事件
@@ -37,28 +46,66 @@ class EventHandler {
     this.handler.canvas.setHeight(nextHeight);
     const diffWidth = nextWidth / 2 - this.handler.width / 2;
     const diffHeight = nextHeight / 2 - this.handler.height / 2;
-    console.log(nextWidth, nextHeight, "nextWidth", diffWidth, diffHeight);
     this.handler.canvas.getObjects().forEach((obj: FabricObject) => {
-      console.log(obj, "obj");
-      // if (obj.id !== "workarea") {
-      //   const left = obj.left + diffWidth;
-      //   const top = obj.top + diffHeight;
-      //   obj.set({
-      //     left,
-      //     top,
-      //   });
-      //   obj.setCoords();
-      //   if (obj.superType === "element") {
-      //     const { id } = obj;
-      //     const el = this.handler.elementHandler.findById(id);
-      //     // update the element
-      //     this.handler.elementHandler.setPosition(el, obj);
-      //   }
-      // }
+      if (obj.id !== "workarea") {
+        const left = obj.left + diffWidth;
+        const top = obj.top + diffHeight;
+        obj.set({
+          left,
+          top,
+        });
+        obj.setCoords();
+        if (obj.superType === "element") {
+          const { id } = obj;
+          const el = this.handler.elementHandler.findById(id);
+          // update the element
+          this.handler.elementHandler.setPosition(el, obj);
+        }
+      }
     });
 
     this.handler.canvas.renderAll();
   };
+  public moving = (opt: FabricEvent) => {
+    const { target } = opt as any;
+    if (this.handler.interactionMode === "crop") {
+      this.handler.cropHandler.moving(opt);
+    } else {
+      if (this.handler.editable && this.handler.guidelineOption.enabled) {
+        //this.handler.guidelineHandler.movingGuidelines(target);
+      }
+      if (target.type === "activeSelection") {
+        const activeSelection = target as fabric.ActiveSelection;
+        console.log(activeSelection, "activeSelection");
+        activeSelection.getObjects().forEach((obj: any) => {
+          const left = target.left + obj.left + target.width / 2;
+          const top = target.top + obj.top + target.height / 2;
+          if (obj.superType === "node") {
+            this.handler.portHandler.setCoords({ ...obj, left, top });
+          } else if (obj.superType === "element") {
+            const { id } = obj;
+
+            const el = this.handler.elementHandler.findById(id);
+            // TODO... Element object incorrect position
+            this.handler.elementHandler.setPositionByOrigin(el, obj, left, top);
+          }
+        });
+        return;
+      }
+      if (target.superType === "node") {
+        this.handler.portHandler.setCoords(target);
+      } else if (target.superType === "element") {
+        const { id, eleType } = target;
+        const el = this.handler.elementHandler.findById(id, eleType);
+        //通过找到元素把内容放里面
+        this.handler.elementHandler.setPosition(el, target);
+      }
+    }
+  };
+  public mouseup(opt: FabricEvent) {
+    console.log(this.handler, "handler");
+    // this.handler.canvas.renderAll();
+  }
 }
 
 export default EventHandler;

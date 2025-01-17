@@ -28,7 +28,29 @@ class ElementHandler {
     obj.setCoords();
     const zoom = this.handler.canvas.getZoom();
     const { scaleX, scaleY, width, height } = obj;
-    const { left, top } = obj.getBoundingRect(false);
+    const { left, top } = obj.getBoundingRect();
+
+    const padLeft = (width * scaleX * zoom - width) / 2;
+    const padTop = (height * scaleY * zoom - height) / 2;
+    el.style.left = `${left + padLeft}px`;
+    el.style.top = `${top + padTop}px`;
+  };
+  /**
+   * 根据绝对定位设置元素
+   *
+   */
+  public setPositionByOrigin = (
+    el: HTMLElement,
+    obj: fabric.Object,
+    left: number,
+    top: number,
+  ) => {
+    if (!el) {
+      return;
+    }
+    obj.setCoords();
+    const zoom = this.handler.canvas.getZoom();
+    const { scaleX, scaleY, width, height } = obj;
     const padLeft = (width * scaleX * zoom - width) / 2;
     const padTop = (height * scaleY * zoom - height) / 2;
     el.style.left = `${left + padLeft}px`;

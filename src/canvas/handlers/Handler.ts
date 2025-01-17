@@ -11,12 +11,11 @@ import {
   InteractionMode,
   WorkareaOption,
 } from "../utils";
-import { DrawingHandler, EventHandler } from ".";
+import { DrawingHandler, EventHandler, ChartHandler, ElementHandler } from ".";
 import React from "react";
 import * as fabric from "fabric";
 import { defaults } from "@/canvas/constants";
 import CanvasObject from "@/canvas/CanvasObject";
-import ElementHandler from "@/canvas/handlers/ElementHandler";
 import warning from "antd/es/_util/warning";
 export interface HandlerCallback {
   /**
@@ -267,6 +266,7 @@ class Handler implements HandlerOptions {
   public objects: FabricObject[];
   public objectMap: Record<string, FabricObject> = {};
   public drawingHandler: DrawingHandler;
+  public elementHandler: ElementHandler;
   public activeShape?: any;
   public activeLine?: any;
   public lineArray?: any[];
@@ -274,7 +274,8 @@ class Handler implements HandlerOptions {
   public handlers: { [key: string]: any } = {};
 
   public eventHandler: EventHandler;
-  public elementHandler: ElementHandler;
+
+  public chartHandler: ChartHandler;
 
   public onAdd?: (object: FabricObject) => void;
   constructor(options: HandlerOptions) {
@@ -289,6 +290,8 @@ class Handler implements HandlerOptions {
   public initHandler(options: HandlerOptions) {
     this.drawingHandler = new DrawingHandler(this);
     this.eventHandler = new EventHandler(this);
+    this.chartHandler = new ChartHandler(this);
+    this.elementHandler = new ElementHandler(this);
   }
   public initOption = (options: HandlerOptions) => {
     this.id = options.id;
@@ -349,17 +352,19 @@ class Handler implements HandlerOptions {
     } else if (obj.eleType === "group") {
       //   createdObj = this.addGroup(newOption);
     } else {
+      console.log(obj.eleType);
       createdObj = this.fabricObjects[obj.eleType].create(newOption);
     }
     if (group) {
       return createdObj;
     }
-    console.log(createdObj, "createdObj", objectOption);
+    console.log(createdObj, "createdObj", objectOption, newOption, "newOption");
 
     //往FabricCanvas对象添加组织好的数据
     this.canvas.add(createdObj);
     //把所有画布对象放到数组里面
     this.objects = this.getObjects();
+    console.log(this.objects, "this.objects");
     if (
       obj.superType !== "drawing" &&
       obj.superType !== "link" &&
@@ -368,6 +373,7 @@ class Handler implements HandlerOptions {
     ) {
       this.centerObject(createdObj, centered);
     }
+    this.centerObject(createdObj, centered);
     //触发Canvas.tsx画布中的回调函数
     if (onAdd && editable && !loaded) {
       onAdd(createdObj);
@@ -460,6 +466,7 @@ class Handler implements HandlerOptions {
 
   public getObjects = (): FabricObject[] => {
     const objects = this.canvas.getObjects().filter((obj: FabricObject) => {
+      console.log(obj, "objaaa");
       if (obj.id === "workarea") {
         return false;
       } else if (obj.id === "grid") {
@@ -471,7 +478,7 @@ class Handler implements HandlerOptions {
       }
       return true;
     }) as FabricObject[];
-    console.log(objects, "objects", this.canvas.getObjects());
+    console.log(objects, "objects", this.canvas.getActiveObject());
     if (objects.length) {
       objects.forEach((obj) => (this.objectMap[obj.id] = obj));
     } else {

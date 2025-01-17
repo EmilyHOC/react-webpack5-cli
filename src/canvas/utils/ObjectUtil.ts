@@ -283,3 +283,53 @@ export type FabricImage = FabricObject &
     filters?: any;
     _element?: any;
   };
+
+export interface FabricElement extends FabricObject<fabric.Rect> {
+  /**
+   * 包装元素
+   * @type {HTMLDivElement}
+   */
+  container: HTMLDivElement;
+  /**
+   * 目标元素
+   * @type {HTMLDivElement}
+   */
+  element: HTMLDivElement;
+  /**
+   * 元素对象的源
+   */
+  setSource: (source: any) => void;
+}
+
+/**
+ * toObject util
+ * @param {*} obj
+ * @param {string[]} propertiesToInclude
+ * @param {{ [key: string]: any }} [properties]
+ */
+export const toObject = (
+  obj: fabric.Object,
+  propertiesToInclude: string[],
+  properties?: any,
+): any => {
+  // 调用父类的 toObject 方法获取基本属性
+  // const baseObj = obj.super("toObject");
+
+  // 将 propertiesToInclude 中的属性添加到结果对象中
+  const extendedProperties = propertiesToInclude.reduce(
+    (prev, property) => ({
+      ...prev,
+      [property]: obj.get(property),
+    }),
+    {},
+  );
+  // 合并传入的 properties（如果有）
+  const finalProperties = properties ? { ...properties } : {};
+
+  // 合并所有对象，返回最终的结果
+  return {
+    // ...baseObj,
+    ...extendedProperties,
+    ...finalProperties,
+  };
+};
