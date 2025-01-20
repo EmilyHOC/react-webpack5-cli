@@ -150,6 +150,7 @@ export type FabricObjectOption<T extends any = fabric.InteractiveFabricObject> =
      */
     clickable?: boolean;
     [key: string]: any;
+    eleType?: string;
   };
 
 export type FabricObject<T extends any = fabric.Object> = T &

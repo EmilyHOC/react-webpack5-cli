@@ -17,6 +17,7 @@ import * as fabric from "fabric";
 import { defaults } from "@/canvas/constants";
 import CanvasObject from "@/canvas/CanvasObject";
 import warning from "antd/es/_util/warning";
+import InteractionHandler from "@/canvas/handlers/InteractionHandler";
 export interface HandlerCallback {
   /**
    * 当 Canvas 中已添加对象时，调用函数
@@ -246,6 +247,7 @@ class Handler implements HandlerOptions {
   public container: HTMLDivElement;
   public editable: boolean;
   public interactionMode: InteractionMode;
+  public interactionHandler: InteractionHandler;
   public minZoom: number;
   public maxZoom: number;
   public zoomStep: number = 0.05;
@@ -276,22 +278,28 @@ class Handler implements HandlerOptions {
   public eventHandler: EventHandler;
 
   public chartHandler: ChartHandler;
+  public onInteraction?: (interactionMode: InteractionMode) => void;
 
   public onAdd?: (object: FabricObject) => void;
+  public handler: any;
   constructor(options: HandlerOptions) {
     this.initialize(options);
   }
   public initialize(options: HandlerOptions) {
     this.initOption(options);
     this.initHandler(options);
-    this.onAdd = options.onAdd;
+    this.initCallback(options);
   }
-
+  public initCallback = (options: HandlerOptions) => {
+    this.onAdd = options.onAdd;
+    this.onInteraction = options.onInteraction;
+  };
   public initHandler(options: HandlerOptions) {
     this.drawingHandler = new DrawingHandler(this);
     this.eventHandler = new EventHandler(this);
     this.chartHandler = new ChartHandler(this);
     this.elementHandler = new ElementHandler(this);
+    this.interactionHandler = new InteractionHandler(this);
   }
   public initOption = (options: HandlerOptions) => {
     this.id = options.id;
@@ -346,25 +354,30 @@ class Handler implements HandlerOptions {
       option,
     );
     let createdObj;
-    // Create canvas object
     if (obj.eleType === "image") {
       createdObj = this.addImage(newOption);
     } else if (obj.eleType === "group") {
       //   createdObj = this.addGroup(newOption);
     } else {
-      console.log(obj.eleType);
+      console.log(obj);
+      console.log(
+        this.fabricObjects[obj.eleType],
+        "this.fabricObjects[obj.eleType]",
+      );
       createdObj = this.fabricObjects[obj.eleType].create(newOption);
     }
     if (group) {
       return createdObj;
     }
-    console.log(createdObj, "createdObj", objectOption, newOption, "newOption");
+    if (!editable && !(obj.superType === "element")) {
+      createdObj.on("mousedown", this.eventHandler.object.mousedown);
+    }
 
     //往FabricCanvas对象添加组织好的数据
     this.canvas.add(createdObj);
     //把所有画布对象放到数组里面
     this.objects = this.getObjects();
-    console.log(this.objects, "this.objects");
+
     if (
       obj.superType !== "drawing" &&
       obj.superType !== "link" &&
@@ -408,7 +421,6 @@ class Handler implements HandlerOptions {
     // createdObj.set({
     //   filters: this.imageHandler.createFilters(filters),
     // });
-    console.log(createdObj, "createdObjImage");
     this.setImage(createdObj, src || file);
     return createdObj;
   };
@@ -466,7 +478,6 @@ class Handler implements HandlerOptions {
 
   public getObjects = (): FabricObject[] => {
     const objects = this.canvas.getObjects().filter((obj: FabricObject) => {
-      console.log(obj, "objaaa");
       if (obj.id === "workarea") {
         return false;
       } else if (obj.id === "grid") {
@@ -478,7 +489,6 @@ class Handler implements HandlerOptions {
       }
       return true;
     }) as FabricObject[];
-    console.log(objects, "objects", this.canvas.getActiveObject());
     if (objects.length) {
       objects.forEach((obj) => (this.objectMap[obj.id] = obj));
     } else {

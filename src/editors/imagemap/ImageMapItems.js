@@ -55,9 +55,25 @@ class ImageMapItems extends Component {
         return;
       }
       const id = nanoid();
-
       const option = Object.assign({}, item.option, { id });
       canvasRef?.handler?.add(option, centered);
+    },
+    onDrawingItem: (item) => {
+      console.log(item, "item-onDrawingItem");
+      const { canvasRef } = this.props;
+      if (canvasRef.handler.interactionMode === "polygon") {
+        //  message.info("Already drawing").then((r) => console.log("error"));
+        return;
+      }
+      if (item.option.eleType === "line") {
+        canvasRef.handler.drawingHandler.line.init();
+      } else if (item.option.eleType === "arrow") {
+        canvasRef.handler.drawingHandler.arrow.init();
+      } else if (item.option.eleType == "polygon") {
+        canvasRef.handler.drawingHandler.polygon.init();
+      } else if (item.option.eleType == "polyline") {
+        canvasRef.handler.drawingHandler.polyline.init();
+      }
     },
   };
 
@@ -84,13 +100,14 @@ class ImageMapItems extends Component {
       {items.map((item) => this.renderItem(item))}
     </Flex>
   );
-  renderItem = (item, centered) =>
-    item.type === "drawing" ? (
+  renderItem = (item, centered) => {
+    return item?.eleType === "drawing" ? (
       <div
         key={item.name}
         draggable
         className="rde-editor-items-item"
         style={{ justifyContent: this.state.collapse ? "center" : null }}
+        onClick={(e) => this.handlers.onDrawingItem(item)}
       >
         <span className="rde-editor-items-item-icon">
           <Icon
@@ -125,6 +142,8 @@ class ImageMapItems extends Component {
         )}
       </div>
     );
+  };
+
   render() {
     const { descriptors } = this.props;
     const { collapse, textSearch, activeKey = [] } = this.state;

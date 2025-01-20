@@ -1,4 +1,4 @@
-import { Handler } from "@/canvas/handlers/index";
+import Handler from "@/canvas/handlers/Handler";
 import { FabricEvent } from "@/canvas/utils";
 import { FabricObject } from "fabric";
 
@@ -12,12 +12,21 @@ class EventHandler {
   }
   public object = {
     /**
-     * Mouse down event on object
+     * 对象上的鼠标按下事件
      * @param {FabricEvent} opt
      */
-    mousedown: (opt: FabricEvent) => {},
+    mousedown: (opt: FabricEvent) => {
+      const { target } = opt;
+      console.log(opt, "opt", target);
+      if (target && target.link && target.link.enabled) {
+        const { onClick } = this.handler;
+        if (onClick) {
+          onClick(this.handler.canvas, target);
+        }
+      }
+    },
     /**
-     * Mouse double click event on object
+     * 鼠标双击对象事件
      * @param {FabricEvent} opt
      */
     mouseDblClick: (opt: FabricEvent) => {},
@@ -26,14 +35,45 @@ class EventHandler {
   public initialize() {
     if (this.handler.editable) {
       // @ts-ignore
-      // @ts-ignore
       this.handler.canvas.on({
         "object:moving": this.moving,
         "mouse:up": this.mouseup,
+        "mouse:down": this.mousedown,
       });
     }
   }
-  public mousedown = (opt: FabricEvent) => {};
+  public mousedown = (opt: FabricEvent) => {
+    const event = opt as FabricEvent<MouseEvent>;
+    const { target } = event;
+    const { editable } = this.handler;
+    if (editable) {
+      if (this.handler.interactionMode === "selection") {
+        if (target && target.superType === "link") {
+          target.set({
+            stroke: target.selectedStroke || "green",
+          });
+        }
+        // this.handler.prevTarget = target;
+        return;
+      }
+      if (this.handler.interactionMode === "polygon") {
+        console.log(target);
+        if (
+          target &&
+          this.handler.pointArray.length &&
+          target.id === this.handler.pointArray[0].id
+        ) {
+          this.handler.drawingHandler.polygon.generate(this.handler.pointArray);
+        } else {
+          this.handler.drawingHandler.polygon.addPoint(event);
+        }
+      } else if (this.handler.interactionMode === "line") {
+        if (this.handler.pointArray.length && this.handler.activeLine) {
+        } else {
+        }
+      }
+    }
+  };
   /**
    * 在画布上调用 resize 事件
    *
@@ -103,7 +143,6 @@ class EventHandler {
     }
   };
   public mouseup(opt: FabricEvent) {
-    console.log(this.handler, "handler");
     // this.handler.canvas.renderAll();
   }
 }

@@ -166,7 +166,7 @@
 		{
 			"name": "Line",
 			"description": "",
-			"type": "drawing",
+			"eleType": "drawing",
 			"icon": {
 				"prefix": "fas",
 				"name": "minus"
@@ -179,7 +179,7 @@
 		{
 			"name": "Arrow",
 			"description": "",
-			"type": "drawing",
+			"eleType": "drawing",
 			"icon": {
 				"prefix": "fas",
 				"name": "long-arrow-alt-right"
@@ -218,7 +218,7 @@
 			"option": {
 				"superType": "element",
 				"eleType": "pieChart",
-				"name": "New chart2",
+				"name": "chart-pie",
 				"width": 300,
 				"height": 300
 			}

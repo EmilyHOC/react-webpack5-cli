@@ -1,7 +1,7 @@
 import * as echarts from "echarts";
 import * as fabric from "fabric";
 
-class LineChart extends fabric.Rect {
+class PieChart extends fabric.Rect {
   superType = "element" as const;
   private readonly _chartOption: echarts.EChartOption;
   private instance?: echarts.ECharts;
@@ -73,4 +73,4 @@ class LineChart extends fabric.Rect {
   }
 }
 
-export default LineChart;
+export default PieChart;
