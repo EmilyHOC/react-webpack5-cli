@@ -58,6 +58,8 @@ class EventHandler {
       }
       if (this.handler.interactionMode === "polygon") {
         console.log(target);
+        //如果第一个点和最后一个点重合，认为polygon画完了
+
         if (
           target &&
           this.handler.pointArray.length &&
@@ -69,7 +71,15 @@ class EventHandler {
         }
       } else if (this.handler.interactionMode === "line") {
         if (this.handler.pointArray.length && this.handler.activeLine) {
+          this.handler.drawingHandler.line.generate(event);
         } else {
+          this.handler.drawingHandler.line.addPoint(event);
+        }
+      } else if (this.handler.interactionMode === "arrow") {
+        if (this.handler.pointArray.length && this.handler.activeLine) {
+          this.handler.drawingHandler.arrow.generate(event);
+        } else {
+          this.handler.drawingHandler.arrow.addPoint(event);
         }
       }
     }

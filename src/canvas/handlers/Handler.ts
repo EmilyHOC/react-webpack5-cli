@@ -360,10 +360,7 @@ class Handler implements HandlerOptions {
       //   createdObj = this.addGroup(newOption);
     } else {
       console.log(obj);
-      console.log(
-        this.fabricObjects[obj.eleType],
-        "this.fabricObjects[obj.eleType]",
-      );
+      console.log(newOption, this.fabricObjects[obj.eleType]);
       createdObj = this.fabricObjects[obj.eleType].create(newOption);
     }
     if (group) {

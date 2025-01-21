@@ -2,6 +2,7 @@ import * as fabric from "fabric";
 
 import { LineChart, PieChart } from "./objects";
 import { FabricObject } from "./utils";
+import Arrow from "@/canvas/objects/Arrow";
 
 export interface ObjectSchema {
   create: (...option: any) => fabric.Object;
@@ -63,12 +64,12 @@ const CanvasObject: CanvasObjectSchema = {
       }),
   },
   line: {
-    // create: ({ points, ...option }: { points: any }) =>
-    //   new Line(points, option),
+    create: ({ points, ...option }: { points: any }) =>
+      new fabric.Line(points, option),
   },
   arrow: {
-    // create: ({ points, ...option }: { points: any }) =>
-    //   new Arrow(points, option),
+    create: ({ points, ...option }: { points: any }) =>
+      new Arrow(points, option),
   },
   chart: {
     create: (option: any) =>

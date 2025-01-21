@@ -59,7 +59,6 @@ class ImageMapItems extends Component {
       canvasRef?.handler?.add(option, centered);
     },
     onDrawingItem: (item) => {
-      console.log(item, "item-onDrawingItem");
       const { canvasRef } = this.props;
       if (canvasRef.handler.interactionMode === "polygon") {
         //  message.info("Already drawing").then((r) => console.log("error"));
