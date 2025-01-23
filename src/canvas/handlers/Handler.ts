@@ -329,7 +329,7 @@ class Handler implements HandlerOptions {
     loaded = false,
     group = false,
   ) => {
-    const { editable, onAdd, gridOption, objectOption } = this;
+    const { editable, onAdd, objectOption } = this;
     const option: any = {
       hasControls: editable,
       hasBorders: editable,
@@ -499,11 +499,12 @@ class Handler implements HandlerOptions {
       typeof canvasOption.width !== "undefined" &&
       typeof canvasOption.height !== "undefined"
     ) {
-      // if (this.eventHandler) {
-      //   this.eventHandler.resize(canvasOption.width, canvasOption.height);
-      // } else {
-      //   this.canvas.setWidth(canvasOption.width).setHeight(canvasOption.height);
-      // }
+      if (this.eventHandler) {
+        this.eventHandler.resize(canvasOption.width, canvasOption.height);
+      } else {
+        // this.canvas.setWidth(canvasOption.width, {});
+        // this.canvas.setHeight(canvasOption.height, {});
+      }
     }
     if (typeof canvasOption.selection !== "undefined") {
       this.canvas.selection = canvasOption.selection;

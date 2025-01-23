@@ -40,6 +40,11 @@ class EventHandler {
         "mouse:up": this.mouseup,
         "mouse:down": this.mousedown,
       });
+      this.handler.canvas.wrapperEl.addEventListener(
+        "dblclick",
+        this.mousedblclick,
+        false,
+      );
     }
   }
   public mousedown = (opt: FabricEvent) => {
@@ -81,7 +86,26 @@ class EventHandler {
         } else {
           this.handler.drawingHandler.arrow.addPoint(event);
         }
+      } else if (this.handler.interactionMode === "polyline") {
+        if (
+          target &&
+          this.handler.pointArray.length &&
+          target.id === this.handler.pointArray[0].id
+        ) {
+        } else {
+          this.handler.drawingHandler.polyline.addPoint(event);
+        }
       }
+    }
+  };
+
+  public mousedblclick = (_e: MouseEvent) => {
+    // 多边形的时候双击结束
+    if (
+      this.handler.interactionMode === "polyline" &&
+      this.handler.pointArray.length >= 2
+    ) {
+      this.handler.drawingHandler.polyline.generate(this.handler.pointArray);
     }
   };
   /**
@@ -96,7 +120,8 @@ class EventHandler {
     this.handler.canvas.setHeight(nextHeight);
     const diffWidth = nextWidth / 2 - this.handler.width / 2;
     const diffHeight = nextHeight / 2 - this.handler.height / 2;
-    this.handler.canvas.getObjects().forEach((obj: FabricObject) => {
+    this.handler.canvas.getObjects().forEach((obj: any) => {
+      console.log(obj, "resize =");
       if (obj.id !== "workarea") {
         const left = obj.left + diffWidth;
         const top = obj.top + diffHeight;
@@ -106,8 +131,9 @@ class EventHandler {
         });
         obj.setCoords();
         if (obj.superType === "element") {
-          const { id } = obj;
-          const el = this.handler.elementHandler.findById(id);
+          const { id, eleType } = obj;
+          const el = this.handler.elementHandler.findById(id, eleType);
+          console.log(el, "obj", obj);
           // update the element
           this.handler.elementHandler.setPosition(el, obj);
         }

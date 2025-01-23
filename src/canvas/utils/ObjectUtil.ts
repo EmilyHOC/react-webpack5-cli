@@ -1,4 +1,5 @@
 import fabric from "fabric";
+import { nanoid } from "nanoid";
 
 //定义了可选的wrapperEL属性，用于指定Fabric.js Canvas应该挂在在哪个元素上面
 export interface FabricCanvasOption {
@@ -150,7 +151,18 @@ export type FabricObjectOption<T extends any = fabric.InteractiveFabricObject> =
      */
     clickable?: boolean;
     [key: string]: any;
+
+    /*
+     * 元素类型
+     * */
     eleType?: string;
+
+    points?: number[];
+    stroke?: string;
+    strokeWidth?: number;
+    opacity?: number;
+    objectCaching?: boolean;
+    name?: string;
   };
 
 export type FabricObject<T extends any = fabric.Object> = T &
