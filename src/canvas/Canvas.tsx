@@ -49,7 +49,6 @@ class InternalCanvas
   };
 
   componentDidMount() {
-    console.log(this.props, "props");
     const { editable, canvasOption, width, height, responsive, ...other } =
       this.props;
     const { id } = this.state;

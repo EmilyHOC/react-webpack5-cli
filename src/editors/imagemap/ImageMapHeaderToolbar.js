@@ -3,6 +3,11 @@ import CommonButton from "@/components/common/CommonButton";
 import i18n from "i18next";
 import { Icon } from "@/components/icon";
 const ImageMapHeaderToolbar = (props) => {
+  const { canvasRef } = props;
+  console.log(canvasRef, "canvasRef");
+  const isCropping = canvasRef
+    ? canvasRef.handler?.interactionMode === "crop"
+    : false;
   return (
     <Flex className="rde-editor-header-toolbar-container" flex="1">
       <Flex.Item className="rde-canvas-toolbar rde-canvas-toolbar-list">
@@ -17,30 +22,66 @@ const ImageMapHeaderToolbar = (props) => {
         <CommonButton
           className="rde-action-btn"
           shape="circle"
+          disabled={isCropping}
+          onClick={() => canvasRef.handler?.bringForward()}
           icon="angle-up"
           tooltipTitle={i18n.t("action.bring-forward")}
         />
         <CommonButton
           className="rde-action-btn"
           shape="circle"
+          disabled={isCropping}
+          onClick={() => canvasRef.handler?.sendBackwards()}
           icon="angle-down"
           tooltipTitle={i18n.t("action.send-backwards")}
         />
         <CommonButton
           className="rde-action-btn"
           shape="circle"
+          disabled={isCropping}
+          onClick={() => canvasRef.handler?.bringToFront()}
           icon="angle-double-up"
           tooltipTitle={i18n.t("action.bring-to-front")}
         />
         <CommonButton
           className="rde-action-btn"
           shape="circle"
+          disabled={isCropping}
+          onClick={() => canvasRef.handler?.sendToBack()}
           icon="angle-double-down"
           tooltipTitle={i18n.t("action.send-to-back")}
+        />
+      </Flex.Item>
+      <Flex.Item className="rde-canvas-toolbar rde-canvas-toolbar-alignment">
+        <CommonButton
+          className="rde-action-btn"
+          shape="circle"
+          disabled={isCropping}
+          onClick={() => canvasRef.handler?.alignmentHandler.left()}
+          icon="align-left"
+          tooltipTitle={i18n.t("action.align-left")}
         />
         <CommonButton
           className="rde-action-btn"
           shape="circle"
+          disabled={isCropping}
+          onClick={() => canvasRef.handler?.alignmentHandler.center()}
+          icon="align-center"
+          tooltipTitle={i18n.t("action.align-center")}
+        />
+        <CommonButton
+          className="rde-action-btn"
+          shape="circle"
+          disabled={isCropping}
+          onClick={() => canvasRef.handler?.alignmentHandler.middle()}
+          icon="align-center"
+          tooltipTitle={i18n.t("action.align-middle")}
+        />
+        <CommonButton
+          className="rde-action-btn"
+          shape="circle"
+          disabled={isCropping}
+          onClick={() => canvasRef.handler?.alignmentHandler.right()}
           icon="align-right"
           tooltipTitle={i18n.t("action.align-right")}
         />

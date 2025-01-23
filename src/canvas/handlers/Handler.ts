@@ -18,6 +18,7 @@ import { defaults } from "@/canvas/constants";
 import CanvasObject from "@/canvas/CanvasObject";
 import warning from "antd/es/_util/warning";
 import InteractionHandler from "@/canvas/handlers/InteractionHandler";
+import AlignmentHandler from "@/canvas/handlers/AlignmentHandler";
 export interface HandlerCallback {
   /**
    * 当 Canvas 中已添加对象时，调用函数
@@ -282,6 +283,7 @@ class Handler implements HandlerOptions {
 
   public onAdd?: (object: FabricObject) => void;
   public handler: any;
+  public alignmentHandler: AlignmentHandler;
   constructor(options: HandlerOptions) {
     this.initialize(options);
   }
@@ -299,6 +301,7 @@ class Handler implements HandlerOptions {
     this.eventHandler = new EventHandler(this);
     this.chartHandler = new ChartHandler(this);
     this.elementHandler = new ElementHandler(this);
+    this.alignmentHandler = new AlignmentHandler(this);
     this.interactionHandler = new InteractionHandler(this);
   }
   public initOption = (options: HandlerOptions) => {

@@ -5,8 +5,7 @@ import i18n from "i18next";
 import classnames from "classnames";
 import { Scrollbar, CommonButton } from "@/components/common";
 import Icon from "@/components/icon/Icon";
-import debounce from "lodash/debounce";
-import { uuid } from "uuidv4";
+
 import { nanoid } from "nanoid";
 
 class ImageMapItems extends Component {

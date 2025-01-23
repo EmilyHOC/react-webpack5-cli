@@ -124,7 +124,10 @@ const ImageMapEditor = () => {
       <ImageMapItems descriptors={descriptors} canvasRef={canvasRef.current} />
       <div className="rde-editor-canvas-container">
         <div className="rde-editor-header-toolbar">
-          <ImageMapHeaderToolbar />
+          <ImageMapHeaderToolbar
+            canvasRef={canvasRef.current}
+            selectedItem={selectedItem}
+          />
         </div>
         <div className="rde-editor-canvas">
           <Canvas
