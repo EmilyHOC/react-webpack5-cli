@@ -90,6 +90,7 @@ const ImageMapHeaderToolbar = (props) => {
         <CommonButton
           className="rde-action-btn"
           shape="circle"
+          onClick={() => canvasRef.handler?.toGroup()}
           icon="object-group"
           tooltipTitle={i18n.t("action.object-group")}
         />

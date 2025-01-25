@@ -19,6 +19,7 @@ import CanvasObject from "@/canvas/CanvasObject";
 import warning from "antd/es/_util/warning";
 import InteractionHandler from "@/canvas/handlers/InteractionHandler";
 import AlignmentHandler from "@/canvas/handlers/AlignmentHandler";
+import { nanoid } from "nanoid";
 export interface HandlerCallback {
   /**
    * 当 Canvas 中已添加对象时，调用函数
@@ -393,6 +394,43 @@ class Handler implements HandlerOptions {
     }
     return createdObj;
   };
+  /*
+   * 编组
+   * @param
+   * */
+  public toGroup = (target?: FabricObject) => {
+    const activeObject =
+      target || (this.canvas.getActiveObject() as fabric.ActiveSelection);
+    if (!activeObject) {
+      return null;
+    }
+    if (activeObject.type !== "activeselection") {
+      return null;
+    }
+    const objectsToGroup = this.canvas
+      .getObjects()
+      .filter((obj) => obj.selectable);
+
+    // 移除原始对象从画布上
+    this.canvas.remove(...objectsToGroup);
+
+    // 创建 Group
+    const group = new fabric.Group(objectsToGroup, {
+      // 可以在这里添加更多配置选项
+      left: this.canvas.getWidth() / 2,
+      top: this.canvas.getHeight() / 2,
+      originX: "center",
+      originY: "center",
+    });
+
+    // 将新创建的 Group 添加到 canvas 上
+    this.canvas.add(group);
+    // 如果需要设置这个 Group 为当前活动对象
+    this.canvas.setActiveObject(group);
+    this.canvas.requestRenderAll();
+    return group;
+  };
+
   /**
    * 在对象上设置位置
    *
@@ -430,7 +468,6 @@ class Handler implements HandlerOptions {
     keepSize?: boolean,
     options?: fabric.ImageProps,
   ) => {
-    console.log(obj, "obj");
     obj
       .setSrc("http://fabricjs.com/assets/honey_im_subtle.png", () => {
         this.canvas.add(obj);
