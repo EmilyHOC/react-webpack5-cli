@@ -42,15 +42,16 @@ class AlignmentHandler {
       this.handler.canvas.requestRenderAll();
     }
   }
+
+  /**
+   * 右对齐
+   */
   public right = () => {
-    console.log("right");
     const activeObject = this.handler.canvas.getActiveObject();
-    console.log(activeObject, "activeObject");
     if (activeObject && activeObject.type === "activeselection") {
       const activeSelection = activeObject as fabric.ActiveSelection;
       // 获取所有对象并计算最左边的位置
       let objects = activeSelection.getObjects();
-      console.log(objects);
       if (objects.length <= 1) return; // 如果只有一个或没有对象，则无需对齐
       // 找到最右边的对象（相对于画布）
       let maxX = Math.max(
@@ -70,12 +71,41 @@ class AlignmentHandler {
         });
         obj.setCoords(); // 更新对象坐标
       });
-
       // 更新组合的选择框和控制点
       activeSelection.setCoords();
-
       // 刷新画布以应用更改
       this.handler.canvas.requestRenderAll();
+    }
+  };
+  //水平居中
+  public center = () => {
+    const activeObject = this.handler.canvas.getActiveObject();
+    if (activeObject && activeObject.type === "activeselection") {
+      const activeSelection = activeObject as fabric.ActiveSelection;
+      activeSelection.forEachObject((obj) => {
+        //居中的元素让每个子元素挪到选中元素的一半就可以了
+        obj.set({
+          left: 0 - (obj.width * obj.scaleX) / 2,
+        });
+        obj.setCoords();
+        // 更新组合的选择框和控制点
+        activeSelection.setCoords();
+        this.handler.canvas.requestRenderAll();
+      });
+    }
+  };
+  //垂直居中
+  public middle = () => {
+    const activeObject = this.handler.canvas.getActiveObject();
+    if (activeObject && activeObject.type === "activeselection") {
+      const activeSelection = activeObject as fabric.ActiveSelection;
+      activeSelection.forEachObject((obj) => {
+        obj.set({
+          top: 0 - (obj.width * obj.scaleX) / 2,
+        });
+        obj.setCoords();
+        this.handler.canvas.requestRenderAll();
+      });
     }
   };
 }
