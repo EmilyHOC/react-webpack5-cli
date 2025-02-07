@@ -11,7 +11,13 @@ import {
   InteractionMode,
   WorkareaOption,
 } from "../utils";
-import { DrawingHandler, EventHandler, ChartHandler, ElementHandler } from ".";
+import {
+  DrawingHandler,
+  EventHandler,
+  ChartHandler,
+  ElementHandler,
+  TransactionHandler,
+} from ".";
 import React from "react";
 import * as fabric from "fabric";
 import { defaults } from "@/canvas/constants";
@@ -271,6 +277,7 @@ class Handler implements HandlerOptions {
   public objectMap: Record<string, FabricObject> = {};
   public drawingHandler: DrawingHandler;
   public elementHandler: ElementHandler;
+  public transactionHandler: TransactionHandler;
   public activeShape?: any;
   public activeLine?: any;
   public lineArray?: any[];
@@ -304,6 +311,7 @@ class Handler implements HandlerOptions {
     this.elementHandler = new ElementHandler(this);
     this.alignmentHandler = new AlignmentHandler(this);
     this.interactionHandler = new InteractionHandler(this);
+    this.transactionHandler = new TransactionHandler(this);
   }
   public initOption = (options: HandlerOptions) => {
     this.id = options.id;
@@ -460,6 +468,79 @@ class Handler implements HandlerOptions {
       // 重新渲染画布
       this.canvas.requestRenderAll();
       return objects;
+    }
+  };
+  /**
+   * 上一层
+   */
+
+  public bringForward = () => {
+    console.log("bringForward");
+    const activeObject = this.canvas.getActiveObject() as FabricObject;
+    if (activeObject) {
+      console.log(this.canvas, "canvas", activeObject);
+      this.canvas.bringObjectForward(activeObject);
+      if (!this.transactionHandler.active) {
+        this.transactionHandler.save("bringForward");
+      }
+      // const { onModified } = this;
+      // if (onModified) {
+      //   onModified(activeObject);
+      // }
+    }
+  };
+  /**
+   * 置于最上层
+   */
+  public bringToFront = () => {
+    console.log("bringToFront");
+    const activeObject = this.canvas.getActiveObject() as FabricObject;
+    if (activeObject) {
+      this.canvas.bringObjectToFront(activeObject);
+      if (!this.transactionHandler.active) {
+        this.transactionHandler.save("bringToFront");
+      }
+      // const { onModified } = this;
+      // if (onModified) {
+      //   onModified(activeObject);
+      // }
+    }
+  };
+  public sendBackwards = () => {
+    console.log("sendBackwards");
+    const activeObject = this.canvas.getActiveObject() as FabricObject;
+    if (activeObject) {
+      const firstObject = this.canvas.getObjects()[1] as FabricObject;
+      if (firstObject.id === activeObject.id) {
+        return;
+      }
+      if (!this.transactionHandler.active) {
+        this.transactionHandler.save("sendBackwards");
+      }
+      this.canvas.sendObjectBackwards(activeObject);
+      // const { onModified } = this;
+      // if (onModified) {
+      //   onModified(activeObject);
+      // }
+    }
+  };
+
+  /**
+   * Send to back
+   */
+  public sendToBack = () => {
+    console.log("sendToBack");
+    const activeObject = this.canvas.getActiveObject() as FabricObject;
+    if (activeObject) {
+      this.canvas.sendObjectToBack(activeObject);
+      this.canvas.sendObjectToBack(this.canvas.getObjects()[1]);
+      if (!this.transactionHandler.active) {
+        this.transactionHandler.save("sendToBack");
+      }
+      // const { onModified } = this;
+      // if (onModified) {
+      //   onModified(activeObject);
+      // }
     }
   };
 
