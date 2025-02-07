@@ -394,10 +394,11 @@ class Handler implements HandlerOptions {
     }
     return createdObj;
   };
-  /*
+
+  /**
    * 编组
-   * @param
-   * */
+   * @param target
+   */
   public toGroup = (target?: FabricObject) => {
     const activeObject =
       target || (this.canvas.getActiveObject() as fabric.ActiveSelection);
@@ -429,6 +430,86 @@ class Handler implements HandlerOptions {
     this.canvas.setActiveObject(group);
     this.canvas.requestRenderAll();
     return group;
+  };
+
+  /**
+   * 取消编组 到activeSelection
+   * @returns
+   */
+  public toActiveSelection = (target?: FabricObject) => {
+    const activeObject =
+      target || (this.canvas.getActiveObject() as fabric.Group);
+    if (!activeObject) {
+      return;
+    }
+    if (activeObject.type !== "group") {
+      return;
+    }
+    if (activeObject && activeObject.type == "group") {
+      // 获取 ActiveSelection 中的所有对象
+      const objects = activeObject.getObjects();
+
+      // 将 ActiveSelection 从画布中移除
+      this.canvas.remove(activeObject);
+
+      // 将每个对象重新添加到画布中
+      objects.forEach((obj: any) => {
+        this.canvas.add(obj);
+      });
+
+      // 重新渲染画布
+      this.canvas.requestRenderAll();
+      return objects;
+    }
+  };
+
+  /**
+   * duplicate复制对象
+   */
+  public duplicate = async () => {
+    const {
+      onAdd,
+      gridOption: { grid = 10 },
+    } = this;
+    const activeObject = this.canvas.getActiveObject() as FabricObject;
+    if (!activeObject) {
+      return;
+    }
+    if (
+      typeof activeObject.cloneable !== "undefined" &&
+      !activeObject.cloneable
+    ) {
+      return;
+    }
+    let clonedObj = await activeObject.clone();
+
+    this.canvas.discardActiveObject();
+    clonedObj.set({
+      left: clonedObj.left + grid,
+      top: clonedObj.top + grid,
+      evented: true,
+    });
+
+    if (activeObject.id === clonedObj.id) {
+      clonedObj.set("id", nanoid());
+    }
+    if (clonedObj.superType === "node") {
+      clonedObj.set("shadow", {
+        color: clonedObj.stroke,
+      } as fabric.Shadow);
+    }
+    this.canvas.add(clonedObj);
+    this.objects = this.getObjects();
+    if (clonedObj.dblclick) {
+      // clonedObj.on('mousedblclick', this.eventHandler.object.mousedblclick);
+    }
+    if (onAdd) {
+      onAdd(clonedObj);
+    }
+
+    this.canvas.setActiveObject(clonedObj);
+    // this.portHandler.create(clonedObj as NodeObject);
+    this.canvas.requestRenderAll();
   };
 
   /**

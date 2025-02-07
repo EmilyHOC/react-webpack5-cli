@@ -15,7 +15,6 @@ class InteractionHandler {
    * @param {(obj: FabricObject) => IReturnType} [callback]
    */
   public selection = (callback?: (obj: FabricObject) => IReturnType) => {
-    console.log("selection", this.handler, callback);
     if (this.handler.interactionMode === "selection") {
       return;
     }

@@ -98,6 +98,7 @@ const ImageMapHeaderToolbar = (props) => {
           className="rde-action-btn"
           shape="circle"
           icon="object-ungroup"
+          onClick={() => canvasRef.handler?.toActiveSelection()}
           tooltipTitle={i18n.t("action.object-ungroup")}
         />
       </Flex.Item>
@@ -133,6 +134,7 @@ const ImageMapHeaderToolbar = (props) => {
           shape="circle"
           icon="clone"
           tooltipTitle={i18n.t("action.clone")}
+          onClick={() => canvasRef.handler?.duplicate()}
         />
         <CommonButton
           className="rde-action-btn"
