@@ -1,7 +1,6 @@
 import {
   CanvasOption,
   FabricCanvas,
-  FabricEvent,
   FabricImage,
   FabricObject,
   FabricObjectOption,
@@ -17,6 +16,7 @@ import {
   ChartHandler,
   ElementHandler,
   TransactionHandler,
+  ShortCutHandler,
 } from ".";
 import React from "react";
 import * as fabric from "fabric";
@@ -278,6 +278,7 @@ class Handler implements HandlerOptions {
   public drawingHandler: DrawingHandler;
   public elementHandler: ElementHandler;
   public transactionHandler: TransactionHandler;
+  public shortcutHandler: ShortCutHandler;
   public activeShape?: any;
   public activeLine?: any;
   public lineArray?: any[];
@@ -312,6 +313,7 @@ class Handler implements HandlerOptions {
     this.alignmentHandler = new AlignmentHandler(this);
     this.interactionHandler = new InteractionHandler(this);
     this.transactionHandler = new TransactionHandler(this);
+    this.shortcutHandler = new ShortCutHandler(this);
   }
   public initOption = (options: HandlerOptions) => {
     this.id = options.id;
@@ -396,6 +398,10 @@ class Handler implements HandlerOptions {
       this.centerObject(createdObj, centered);
     }
     this.centerObject(createdObj, centered);
+
+    if (!this.transactionHandler.active && !loaded) {
+      this.transactionHandler.save("add");
+    }
     //触发Canvas.tsx画布中的回调函数
     if (onAdd && editable && !loaded) {
       onAdd(createdObj);
@@ -726,5 +732,32 @@ class Handler implements HandlerOptions {
    *
    */
   public destroy = () => {};
+
+  public clear = (includeWorkarea = false) => {
+    const ids = this.canvas.getObjects().reduce((prev, curr: any) => {
+      if (curr.superType === "element") {
+        console.log(curr, "curr");
+        this.elementHandler.removeById(curr.id, curr.eleType);
+        prev.push(curr.id);
+        return prev;
+      }
+      return prev;
+    }, []);
+
+    if (includeWorkarea) {
+      // this.canvas.clear();
+      // this.workarea = null;
+    } else {
+      this.canvas.discardActiveObject();
+      this.canvas.getObjects().forEach((obj: any) => {
+        if (obj.id === "grid" || obj.id === "workarea") {
+          return;
+        }
+        this.canvas.remove(obj);
+      });
+    }
+    this.objects = this.getObjects();
+    this.canvas.requestRenderAll();
+  };
 }
 export default Handler;

@@ -18,6 +18,7 @@ class DrawingHandler {
       this.handler.activeShape = null;
     },
     finish: () => {
+      console.log("取消绘制");
       this.handler.pointArray.forEach((point) => {
         this.handler.canvas.remove(point);
       });
@@ -30,7 +31,7 @@ class DrawingHandler {
       this.handler.lineArray = [];
       this.handler.activeLine = null;
       this.handler.activeShape = null;
-      this.handler.canvas.renderAll();
+      this.handler.canvas.requestRenderAll();
       this.handler.interactionHandler.selection();
     },
     addPoint: (opt: FabricEvent) => {

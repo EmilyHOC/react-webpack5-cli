@@ -1,6 +1,7 @@
 import Handler from "./Handler";
 import { FabricObject } from "../utils";
-
+import throttle from "lodash/throttle";
+import * as fabric from "fabric";
 export type TransactionType =
   | "add"
   | "remove"
@@ -45,7 +46,7 @@ class TransactionHandler {
     this.active = false;
   }
   /**
-   * Save transaction
+   * 保存操作
    *
    * @param {TransactionType} type
    * @param {*} [canvasJSON]
@@ -70,7 +71,6 @@ class TransactionHandler {
       }
       const { objects }: { objects: FabricObject[] } =
         canvasJSON || this.handler.canvas.toJSON();
-      console.log(objects, "objects", this.handler.canvas.toJSON());
       this.state = objects.filter((obj) => {
         if (obj.id === "workarea") {
           return false;
@@ -84,7 +84,37 @@ class TransactionHandler {
     } catch (error) {
       console.error(error);
     }
-    console.log(this.state, "this.state");
+  };
+  /**
+   * 撤销函数
+   */
+  public undo = throttle(async () => {
+    const undo = this.undos.pop();
+    if (!undo) return;
+    this.redos.push({
+      type: "redo",
+      json: JSON.stringify(this.state),
+    });
+    await this.replay(undo);
+  }, 100);
+  /**
+   * 拿到最新的画面数组重新渲染
+   * @param transaction
+   */
+  public replay = async (transaction: TransactionEvent) => {
+    const objects = JSON.parse(transaction.json) as FabricObject[];
+    //当前画面存在的数组
+    this.state = objects;
+    this.handler.canvas.renderOnAddRemove = false;
+    this.handler.clear();
+    this.handler.canvas.discardActiveObject();
+
+    let enlivenObjects = await fabric.util.enlivenObjects(objects);
+    console.log(enlivenObjects, "当前激活的元素");
+    //当前激活的元素返回的是fabric对象
+    enlivenObjects.forEach((obj: any) => {
+      this.handler.canvas.add(obj);
+    });
   };
 }
 

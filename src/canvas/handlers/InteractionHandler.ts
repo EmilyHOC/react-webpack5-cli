@@ -46,7 +46,7 @@ class InteractionHandler {
         obj.evented = true;
       }
     });
-    this.handler.canvas.renderAll();
+    this.handler.canvas.requestRenderAll();
     this.handler.onInteraction?.("selection");
   };
 

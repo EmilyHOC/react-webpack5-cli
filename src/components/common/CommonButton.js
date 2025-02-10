@@ -60,6 +60,7 @@ const CommonButton = (props) => {
         type={type}
         disabled={disabled}
         loading={loading}
+        onClick={onClick}
       >
         <Icon
           name={icon}

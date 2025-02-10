@@ -144,7 +144,10 @@ const ImageMapHeaderToolbar = (props) => {
         />
       </Flex.Item>
       <Flex.Item className="rde-canvas-toolbar rde-canvas-toolbar-history">
-        <CommonButton className="rde-action-btn">
+        <CommonButton
+          className="rde-action-btn"
+          onClick={() => canvasRef.handler.transactionHandler.undo()}
+        >
           <Icon name="undo-alt" style={{ marginRight: 8 }} />
           Undo
         </CommonButton>

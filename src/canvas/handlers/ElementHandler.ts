@@ -56,6 +56,50 @@ class ElementHandler {
     el.style.left = `${left + padLeft}px`;
     el.style.top = `${top + padTop}px`;
   };
+  /**
+   * 根据ids数组移除元素
+   */
+  public removeByIds = (ids: string[]) => {
+    ids.forEach((id) => {
+      this.removeById(id);
+    });
+  };
+  /**
+   * 根据id移除元素
+   */
+  public removeById = (id: string, type: string) => {
+    const el = this.findById(id, type);
+    console.log(el, "移除的元素");
+    const scriptEl = this.findById(id, "script");
+    const styleEl = this.findById(id, "style");
+    if (el) {
+      if (el.remove) {
+        el.remove();
+      } else {
+        this.remove(el);
+      }
+    }
+    if (scriptEl) {
+      if (scriptEl.remove) {
+        scriptEl.remove();
+      } else {
+        document.head.removeChild(scriptEl);
+      }
+    }
+    if (styleEl) {
+      if (styleEl.remove) {
+        styleEl.remove();
+      } else {
+        document.head.removeChild(styleEl);
+      }
+    }
+  };
+  public remove = (el: HTMLElement) => {
+    if (!el) {
+      return;
+    }
+    this.handler.container.removeChild(el);
+  };
 }
 
 export default ElementHandler;

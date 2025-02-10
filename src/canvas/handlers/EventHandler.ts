@@ -1,6 +1,5 @@
 import Handler from "@/canvas/handlers/Handler";
 import { FabricEvent } from "@/canvas/utils";
-import { FabricObject } from "fabric";
 
 class EventHandler {
   handler: Handler;
@@ -17,7 +16,6 @@ class EventHandler {
      */
     mousedown: (opt: FabricEvent) => {
       const { target } = opt;
-      console.log(opt, "opt", target);
       if (target && target.link && target.link.enabled) {
         const { onClick } = this.handler;
         if (onClick) {
@@ -40,6 +38,21 @@ class EventHandler {
         "mouse:up": this.mouseup,
         "mouse:down": this.mousedown,
       });
+      this.handler.canvas.wrapperEl.tabIndex = 1000;
+      this.handler.canvas.wrapperEl.addEventListener(
+        "keydown",
+        this.keydown,
+        false,
+      );
+      this.handler.canvas.wrapperEl.addEventListener(
+        "keyup",
+        this.keyup,
+        false,
+      );
+      console.log(
+        this.handler.canvas.wrapperEl,
+        " this.handler.canvas.wrapperEl",
+      );
       this.handler.canvas.wrapperEl.addEventListener(
         "dblclick",
         this.mousedblclick,
@@ -47,6 +60,9 @@ class EventHandler {
       );
     }
   }
+  public keyup = (e: KeyboardEvent) => {
+    console.log(e);
+  };
   public mousedown = (opt: FabricEvent) => {
     const event = opt as FabricEvent<MouseEvent>;
     const { target } = event;
@@ -100,6 +116,7 @@ class EventHandler {
   };
 
   public mousedblclick = (_e: MouseEvent) => {
+    console.log(_e, "doubleclick");
     // 多边形的时候双击结束
     if (
       this.handler.interactionMode === "polyline" &&
@@ -145,7 +162,7 @@ class EventHandler {
   public moving = (opt: FabricEvent) => {
     const { target } = opt as any;
     if (this.handler.interactionMode === "crop") {
-      this.handler.cropHandler.moving(opt);
+      //  this.handler.cropHandler.moving(opt);
     } else {
       if (this.handler.editable && this.handler.guidelineOption.enabled) {
         //this.handler.guidelineHandler.movingGuidelines(target);
@@ -157,7 +174,7 @@ class EventHandler {
           const left = target.left + obj.left + target.width / 2;
           const top = target.top + obj.top + target.height / 2;
           if (obj.superType === "node") {
-            this.handler.portHandler.setCoords({ ...obj, left, top });
+            //    this.handler.portHandler.setCoords({ ...obj, left, top });
           } else if (obj.superType === "element") {
             const { id } = obj;
 
@@ -169,7 +186,7 @@ class EventHandler {
         return;
       }
       if (target.superType === "node") {
-        this.handler.portHandler.setCoords(target);
+        //  this.handler.portHandler.setCoords(target);
       } else if (target.superType === "element") {
         const { id, eleType } = target;
         const el = this.handler.elementHandler.findById(id, eleType);
@@ -181,6 +198,36 @@ class EventHandler {
   public mouseup(opt: FabricEvent) {
     // this.handler.canvas.renderAll();
   }
+
+  /*
+   * 键盘事件的入口
+   * */
+  public keydown = (e: KeyboardEvent) => {
+    const { keyEvent, editable } = this.handler;
+    if (!Object.keys(keyEvent).length) {
+      return;
+    }
+    const { clipboard, grab } = keyEvent;
+    console.log(
+      this.handler.interactionHandler.isDrawingMode(),
+      this.handler.shortcutHandler.isEscape(e),
+      this.handler.interactionMode,
+    );
+    if (this.handler.interactionHandler.isDrawingMode()) {
+      if (this.handler.shortcutHandler.isEscape(e)) {
+        if (this.handler.interactionMode === "polygon") {
+          this.handler.drawingHandler.polygon.finish();
+        } else if (this.handler.interactionMode === "line") {
+          this.handler.drawingHandler.line.finish();
+        } else if (this.handler.interactionMode === "arrow") {
+          this.handler.drawingHandler.arrow.finish();
+        } else if (this.handler.interactionMode === "link") {
+          //this.handler.linkHandler.finish();
+        }
+      }
+      return;
+    }
+  };
 }
 
 export default EventHandler;
