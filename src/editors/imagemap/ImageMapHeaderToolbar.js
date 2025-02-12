@@ -141,6 +141,7 @@ const ImageMapHeaderToolbar = (props) => {
           shape="circle"
           icon="trash"
           tooltipTitle={i18n.t("action.delete")}
+          onClick={() => canvasRef.handler?.deleteActiveSelection()}
         />
       </Flex.Item>
       <Flex.Item className="rde-canvas-toolbar rde-canvas-toolbar-history">

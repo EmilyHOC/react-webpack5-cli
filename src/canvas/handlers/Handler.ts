@@ -668,7 +668,6 @@ class Handler implements HandlerOptions {
    * @param {boolean} [find]
    */
   public select = (obj: FabricObject, find?: boolean) => {
-    console.log(obj, "select==object", this.objects);
     let findObject = obj;
     if (find) {
       findObject = this.find(obj);
@@ -736,7 +735,6 @@ class Handler implements HandlerOptions {
   public clear = (includeWorkarea = false) => {
     const ids = this.canvas.getObjects().reduce((prev, curr: any) => {
       if (curr.superType === "element") {
-        console.log(curr, "curr");
         this.elementHandler.removeById(curr.id, curr.eleType);
         prev.push(curr.id);
         return prev;
@@ -758,6 +756,16 @@ class Handler implements HandlerOptions {
     }
     this.objects = this.getObjects();
     this.canvas.requestRenderAll();
+  };
+  /**
+   * 删除选中元素
+   */
+  public deleteActiveSelection = () => {
+    const activeObject = this.canvas.getActiveObject();
+    if (!activeObject) {
+      return;
+    }
+    this.canvas.remove(activeObject);
   };
 }
 export default Handler;
